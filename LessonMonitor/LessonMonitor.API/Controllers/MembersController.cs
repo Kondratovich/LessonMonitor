@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace LessonMonitor.API.Controllers
 {
@@ -11,7 +9,7 @@ namespace LessonMonitor.API.Controllers
     [Route("[controller]")]
     public class MembersController : ControllerBase
     {
-        private Member[] members = new Member[] {
+        private List<Member> members = new List<Member> {
             new Member() { Id = 1, Name = "Alex", Age = 22 },
             new Member() { Id = 2, Name = "Pavel", Age = 20 },
             new Member() { Id = 3, Name = "John", Age = 19 },
@@ -20,7 +18,7 @@ namespace LessonMonitor.API.Controllers
         };
 
         [HttpGet]
-        public Member[] Get()
+        public List<Member> Get()
         {
             return members;
         }
@@ -28,6 +26,21 @@ namespace LessonMonitor.API.Controllers
         public Member Get(int id)
         {
             return members.FirstOrDefault(x => x.Id == id);
+        }
+
+        [HttpPost]
+        public ActionResult<Member> Post(Member member)
+        {
+            var type = typeof(Member);
+            var customAttr = type.GetCustomAttribute<MemberValidationAttribute>();
+
+            if (!customAttr.IsValid(member)) {
+                return BadRequest(customAttr.ErrorMessage);
+            }
+
+            members.Add(member);
+
+            return Ok(member);
         }
     }
 }

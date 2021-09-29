@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LessonMonitor.API
+namespace LessonMonitor.API.ReflectionModels
 {
-    [MemberValidation]
-    public class Member
+    public class ModelA
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int? Age { get; set; }
+        public bool IsEmpty { get; set; }
     }
 }
